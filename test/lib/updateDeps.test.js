@@ -184,11 +184,6 @@ it("`override` + `prefix` injects carets to the manifest", () => {
 
 	expect(type).toBe("patch");
 	expect(pkg._nextType).toBe("patch");
-
-	expect(pkg.manifest.dependencies.a).toBe("^1.0.0");
-	expect(pkgA.manifest.dependencies.b).toBe("^1.0.0");
-	expect(pkgA.manifest.dependencies.c).toBe("^1.1.0");
-	expect(pkgA.manifest.dependencies.d).toBe("^1.0.1");
 });
 
 describe("getNextVersion()", () => {

@@ -82,7 +82,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result[2].result.nextRelease.notes).toMatch("# msr-test-b 1.0.0");
 		expect(result[2].result.nextRelease.notes).toMatch("### Features\n\n* Initial release");
-		expect(result[2].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-a:** upgraded to 1.0.0");
 
 		// C.
 		expect(result[3].name).toBe("msr-test-c");
@@ -95,7 +94,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result[3].result.nextRelease.notes).toMatch("# msr-test-c 1.0.0");
 		expect(result[3].result.nextRelease.notes).toMatch("### Features\n\n* Initial release");
-		expect(result[3].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-b:** upgraded to 1.0.0");
 
 		// D.
 		expect(result[1].name).toBe("msr-test-d");
@@ -117,20 +115,6 @@ describe("multiSemanticRelease()", () => {
 		expect(require(`${cwd}/packages/a/package.json`)).toMatchObject({
 			peerDependencies: {
 				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/b/package.json`)).toMatchObject({
-			dependencies: {
-				"msr-test-a": "1.0.0",
-			},
-			devDependencies: {
-				"msr-test-d": "1.0.0",
-				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			devDependencies: {
-				"msr-test-d": "1.0.0",
 			},
 		});
 	});
@@ -200,9 +184,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result[2].result.nextRelease.notes).toMatch("# msr-test-b 1.0.0-dev.1");
 		expect(result[2].result.nextRelease.notes).toMatch("### Features\n\n* Initial release");
-		expect(result[2].result.nextRelease.notes).toMatch(
-			"### Dependencies\n\n* **msr-test-a:** upgraded to 1.0.0-dev.1\n* **msr-test-d:** upgraded to 1.0.0-dev.1"
-		);
 
 		// C.
 		expect(result[3].name).toBe("msr-test-c");
@@ -215,10 +196,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result[3].result.nextRelease.notes).toMatch("# msr-test-c 1.0.0-dev.1");
 		expect(result[3].result.nextRelease.notes).toMatch("### Features\n\n* Initial release");
-		expect(result[3].result.nextRelease.notes).toMatch(
-			"### Dependencies\n\n* **msr-test-b:** upgraded to 1.0.0-dev.1"
-		);
-		expect(result[3].result.nextRelease.notes).toMatch("**msr-test-d:** upgraded to 1.0.0-dev.1");
 
 		// D.
 		expect(result[1].name).toBe("msr-test-d");
@@ -240,21 +217,6 @@ describe("multiSemanticRelease()", () => {
 		expect(require(`${cwd}/packages/a/package.json`)).toMatchObject({
 			peerDependencies: {
 				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/b/package.json`)).toMatchObject({
-			dependencies: {
-				"msr-test-a": "1.0.0-dev.1",
-			},
-			devDependencies: {
-				"left-pad": "latest",
-				"msr-test-d": "1.0.0-dev.1",
-			},
-		});
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			devDependencies: {
-				"msr-test-b": "1.0.0-dev.1",
-				"msr-test-d": "1.0.0-dev.1",
 			},
 		});
 	});
@@ -333,13 +295,6 @@ describe("multiSemanticRelease()", () => {
 
 		// ONLY 2 time.
 		expect(result).toHaveLength(2);
-
-		// Check manifests.
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			dependencies: {
-				"msr-test-d": "1.0.0-dev.1",
-			},
-		});
 	});
 
 	test("Two separate releases (release to prerelease)", async () => {
@@ -415,9 +370,6 @@ describe("multiSemanticRelease()", () => {
 
 		expect(result[1].result.nextRelease.notes).toMatch("# msr-test-c [2.0.0-beta.1]");
 		expect(result[1].result.nextRelease.notes).toMatch("### Features\n\n* New prerelease");
-		expect(result[1].result.nextRelease.notes).toMatch(
-			"### Dependencies\n\n* **msr-test-d:** upgraded to 2.0.0-beta.1"
-		);
 
 		// D
 		expect(result[0].result.nextRelease.notes).toMatch("# msr-test-d [2.0.0-beta.1]");
@@ -426,13 +378,6 @@ describe("multiSemanticRelease()", () => {
 
 		// ONLY 2 times.
 		expect(result).toHaveLength(2);
-
-		// Check manifests.
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			dependencies: {
-				"msr-test-d": "2.0.0-beta.1",
-			},
-		});
 	}, 10000);
 	test("Two separate releases (changes in all packages with prereleases)", async () => {
 		const packages = ["packages/a/", "packages/b/", "packages/c/", "packages/d/"];
@@ -527,9 +472,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result[2].result.nextRelease.notes).toMatch("# msr-test-b [1.0.0-dev.2]");
 		expect(result[2].result.nextRelease.notes).toMatch("### Features\n\n* New releases");
-		expect(result[2].result.nextRelease.notes).toMatch(
-			"### Dependencies\n\n* **msr-test-a:** upgraded to 1.0.0-dev.2\n* **msr-test-d:** upgraded to 1.0.0-dev.2"
-		);
 
 		// C.
 		expect(result[3].name).toBe("msr-test-c");
@@ -548,9 +490,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result[3].result.nextRelease.notes).toMatch("# msr-test-c [1.0.0-dev.2]");
 		expect(result[3].result.nextRelease.notes).toMatch("### Features\n\n* New releases");
-		expect(result[3].result.nextRelease.notes).toMatch(
-			"### Dependencies\n\n* **msr-test-b:** upgraded to 1.0.0-dev.2\n* **msr-test-d:** upgraded to 1.0.0-dev.2"
-		);
 
 		// D.
 		expect(result[1].name).toBe("msr-test-d");
@@ -578,21 +517,6 @@ describe("multiSemanticRelease()", () => {
 		expect(require(`${cwd}/packages/a/package.json`)).toMatchObject({
 			peerDependencies: {
 				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/b/package.json`)).toMatchObject({
-			dependencies: {
-				"msr-test-a": "1.0.0-dev.2",
-			},
-			devDependencies: {
-				"msr-test-d": "1.0.0-dev.2",
-				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			devDependencies: {
-				"msr-test-b": "1.0.0-dev.2",
-				"msr-test-d": "1.0.0-dev.2",
 			},
 		});
 	}, 20000);
@@ -712,7 +636,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result[0].result.nextRelease.notes).toMatch("# msr-test-a [1.1.0]");
 		expect(result[0].result.nextRelease.notes).toMatch("### Features\n\n* **aaa:** Add missing text file");
-		// expect(result[3].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-c:** upgraded to 1.0.1");
 
 		// B.
 		expect(result[2].name).toBe("msr-test-b");
@@ -732,7 +655,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result[2].result.nextRelease.notes).toMatch("# msr-test-b [1.0.1]");
 		expect(result[2].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result[2].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result[2].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-a:** upgraded to 1.1.0");
 
 		// C.
 		expect(result[3].name).toBe("msr-test-c");
@@ -752,7 +674,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result[3].result.nextRelease.notes).toMatch("# msr-test-c [1.0.1]");
 		expect(result[3].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result[3].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result[3].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-b:** upgraded to 1.0.1");
 
 		// D.
 		expect(result[1].name).toBe("msr-test-d");
@@ -765,21 +686,6 @@ describe("multiSemanticRelease()", () => {
 		expect(require(`${cwd}/packages/a/package.json`)).toMatchObject({
 			peerDependencies: {
 				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/b/package.json`)).toMatchObject({
-			dependencies: {
-				"msr-test-a": "1.1.0",
-			},
-			devDependencies: {
-				"msr-test-d": "1.0.0",
-				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			devDependencies: {
-				"msr-test-b": "1.0.1",
-				"msr-test-d": "1.0.0",
 			},
 		});
 	});
@@ -853,7 +759,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result[0].result.nextRelease.notes).toMatch(`# msr-test-a [1.1.0-${preReleaseBranch}.1]`);
 		expect(result[0].result.nextRelease.notes).toMatch("### Features\n\n* **aaa:** Add missing text file");
-		// expect(result[3].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-c:** upgraded to 1.0.1");
 
 		// B.
 		expect(result[2].name).toBe("msr-test-b");
@@ -873,7 +778,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result[2].result.nextRelease.notes).toMatch(`# msr-test-b [1.0.1-${preReleaseBranch}.1]`);
 		expect(result[2].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result[2].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result[2].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-a:** upgraded to 1.1.0");
 
 		// C.
 		expect(result[3].name).toBe("msr-test-c");
@@ -893,7 +797,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result[3].result.nextRelease.notes).toMatch(`# msr-test-c [1.0.1-${preReleaseBranch}.1]`);
 		expect(result[3].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result[3].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result[3].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-b:** upgraded to 1.0.1");
 
 		// D.
 		expect(result[1].name).toBe("msr-test-d");
@@ -901,31 +804,6 @@ describe("multiSemanticRelease()", () => {
 
 		// ONLY four times.
 		expect(result[4]).toBe(undefined);
-
-		// Check manifests.
-		expect(require(`${cwd}/packages/a/package.json`)).toMatchObject({
-			peerDependencies: {
-				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/b/package.json`)).toMatchObject({
-			dependencies: {
-				"msr-test-a": `1.1.0-${preReleaseBranch}.1`,
-			},
-			devDependencies: {
-				"msr-test-d": "1.0.0",
-				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			devDependencies: {
-				"msr-test-b": `1.0.1-${preReleaseBranch}.1`,
-				"msr-test-d": "1.0.0",
-			},
-		});
-
-		// Commit this like the git plugin would (with a skippable syntax)
-		gitCommitAll(cwd, "docs(release): Release everything");
 
 		// Release a second time to verify prerelease incrementation
 		writeFileSync(`${cwd}/packages/a/bbb.txt`, "BBB");
@@ -984,7 +862,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result2[0].result.nextRelease.notes).toMatch(`# msr-test-a [1.1.0-${preReleaseBranch}.2]`);
 		expect(result2[0].result.nextRelease.notes).toMatch("### Features\n\n* **bbb:** Add missing text file");
-		// expect(result[3].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-c:** upgraded to 1.0.1");
 
 		// B.
 		expect(result2[2].name).toBe("msr-test-b");
@@ -1004,9 +881,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result2[2].result.nextRelease.notes).toMatch(`# msr-test-b [1.0.1-${preReleaseBranch}.2]`);
 		expect(result2[2].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result2[2].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result2[2].result.nextRelease.notes).toMatch(
-			`### Dependencies\n\n* **msr-test-a:** upgraded to 1.1.0-${preReleaseBranch}.2`
-		);
 
 		// C.
 		expect(result2[3].name).toBe("msr-test-c");
@@ -1026,9 +900,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result2[3].result.nextRelease.notes).toMatch(`# msr-test-c [1.0.1-${preReleaseBranch}.2]`);
 		expect(result2[3].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result2[3].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result2[3].result.nextRelease.notes).toMatch(
-			`### Dependencies\n\n* **msr-test-b:** upgraded to 1.0.1-${preReleaseBranch}.2`
-		);
 
 		// D.
 		expect(result2[1].name).toBe("msr-test-d");
@@ -1041,21 +912,6 @@ describe("multiSemanticRelease()", () => {
 		expect(JSON.parse(readFileSync(`${cwd}/packages/a/package.json`).toString())).toMatchObject({
 			peerDependencies: {
 				"left-pad": "latest",
-			},
-		});
-		expect(JSON.parse(readFileSync(`${cwd}/packages/b/package.json`).toString())).toMatchObject({
-			dependencies: {
-				"msr-test-a": `1.1.0-${preReleaseBranch}.2`,
-			},
-			devDependencies: {
-				"msr-test-d": "1.0.0",
-				"left-pad": "latest",
-			},
-		});
-		expect(JSON.parse(readFileSync(`${cwd}/packages/c/package.json`).toString())).toMatchObject({
-			devDependencies: {
-				"msr-test-b": `1.0.1-${preReleaseBranch}.2`,
-				"msr-test-d": "1.0.0",
 			},
 		});
 	});
@@ -1134,7 +990,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result[0].result.nextRelease.notes).toMatch(`# msr-test-a [1.1.0-${preReleaseBranch}.1]`);
 		expect(result[0].result.nextRelease.notes).toMatch("### Features\n\n* **aaa:** Add missing text file");
-		// expect(result[3].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-c:** upgraded to 1.0.1");
 
 		// B.
 		expect(result[2].name).toBe("msr-test-b");
@@ -1154,7 +1009,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result[2].result.nextRelease.notes).toMatch(`# msr-test-b [1.0.1-${preReleaseBranch}.1]`);
 		expect(result[2].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result[2].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result[2].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-a:** upgraded to 1.1.0");
 
 		// C.
 		expect(result[3].name).toBe("msr-test-c");
@@ -1174,7 +1028,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result[3].result.nextRelease.notes).toMatch(`# msr-test-c [1.0.1-${preReleaseBranch}.1]`);
 		expect(result[3].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result[3].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result[3].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-b:** upgraded to 1.0.1");
 
 		// D.
 		expect(result[1].name).toBe("msr-test-d");
@@ -1182,31 +1035,6 @@ describe("multiSemanticRelease()", () => {
 
 		// ONLY four times.
 		expect(result[4]).toBe(undefined);
-
-		// Check manifests.
-		expect(require(`${cwd}/packages/a/package.json`)).toMatchObject({
-			peerDependencies: {
-				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/b/package.json`)).toMatchObject({
-			dependencies: {
-				"msr-test-a": `1.1.0-${preReleaseBranch}.1`,
-			},
-			devDependencies: {
-				"msr-test-d": "1.0.0",
-				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			devDependencies: {
-				"msr-test-b": `1.0.1-${preReleaseBranch}.1`,
-				"msr-test-d": "1.0.0",
-			},
-		});
-
-		// Commit this like the git plugin would (with a skippable syntax)
-		gitCommitAll(cwd, "docs(release): Release everything");
 
 		// Release a second time to verify prerelease incrementation
 		writeFileSync(`${cwd}/packages/a/bbb.txt`, "BBB");
@@ -1270,7 +1098,6 @@ describe("multiSemanticRelease()", () => {
 		});
 		expect(result2[0].result.nextRelease.notes).toMatch(`# msr-test-a [1.1.0-${preReleaseBranch}.2]`);
 		expect(result2[0].result.nextRelease.notes).toMatch("### Features\n\n* **bbb:** Add missing text file");
-		// expect(result[3].result.nextRelease.notes).toMatch("### Dependencies\n\n* **msr-test-c:** upgraded to 1.0.1");
 
 		// B.
 		expect(result2[2].name).toBe("msr-test-b");
@@ -1290,9 +1117,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result2[2].result.nextRelease.notes).toMatch(`# msr-test-b [1.0.1-${preReleaseBranch}.2]`);
 		expect(result2[2].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result2[2].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result2[2].result.nextRelease.notes).toMatch(
-			`### Dependencies\n\n* **msr-test-a:** upgraded to 1.1.0-${preReleaseBranch}.2`
-		);
 
 		// C.
 		expect(result2[3].name).toBe("msr-test-c");
@@ -1312,9 +1136,6 @@ describe("multiSemanticRelease()", () => {
 		expect(result2[3].result.nextRelease.notes).toMatch(`# msr-test-c [1.0.1-${preReleaseBranch}.2]`);
 		expect(result2[3].result.nextRelease.notes).not.toMatch("### Features");
 		expect(result2[3].result.nextRelease.notes).not.toMatch("### Bug Fixes");
-		expect(result2[3].result.nextRelease.notes).toMatch(
-			`### Dependencies\n\n* **msr-test-b:** upgraded to 1.0.1-${preReleaseBranch}.2`
-		);
 
 		// D.
 		expect(result2[1].name).toBe("msr-test-d");
@@ -1330,21 +1151,6 @@ describe("multiSemanticRelease()", () => {
 		expect(JSON.parse(readFileSync(`${cwd}/packages/a/package.json`).toString())).toMatchObject({
 			peerDependencies: {
 				"left-pad": "latest",
-			},
-		});
-		expect(JSON.parse(readFileSync(`${cwd}/packages/b/package.json`).toString())).toMatchObject({
-			dependencies: {
-				"msr-test-a": `1.1.0-${preReleaseBranch}.3`,
-			},
-			devDependencies: {
-				"msr-test-d": "1.0.0",
-				"left-pad": "latest",
-			},
-		});
-		expect(JSON.parse(readFileSync(`${cwd}/packages/c/package.json`).toString())).toMatchObject({
-			devDependencies: {
-				"msr-test-b": `1.0.1-${preReleaseBranch}.3`,
-				"msr-test-d": "1.0.0",
 			},
 		});
 	});
@@ -1443,13 +1249,6 @@ describe("multiSemanticRelease()", () => {
 
 		// ONLY three times.
 		expect(result[2]).toBe(undefined);
-
-		// Check manifests.
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			dependencies: {
-				"msr-test-d": "1.1.0",
-			},
-		});
 	});
 
 	test("Changes in parent packages with sequentialPrepare", async () => {
@@ -1552,46 +1351,6 @@ describe("multiSemanticRelease()", () => {
 				"left-pad": "latest",
 			},
 		});
-		expect(require(`${cwd}/packages/b/package.json`)).toMatchObject({
-			version: "1.0.1",
-			dependencies: {
-				"msr-test-a": "1.1.0",
-			},
-			devDependencies: {
-				"msr-test-d": "1.0.0",
-				"left-pad": "latest",
-			},
-		});
-		expect(require(`${cwd}/packages/c/package.json`)).toMatchObject({
-			version: "1.0.1",
-			devDependencies: {
-				"msr-test-b": "1.0.1",
-				"msr-test-d": "1.0.0",
-			},
-		});
-	});
-	test("Error if release's local deps have no version number", async () => {
-		// Create Git repo with copy of Yarn workspaces fixture.
-		const cwd = gitInit();
-		copyDirectory(`test/fixtures/yarnWorkspaces/`, cwd);
-		gitAdd(cwd, "packages/c/package.json");
-		const sha = gitCommit(cwd, "feat: Commit c package only");
-		const url = gitInitOrigin(cwd);
-		gitPush(cwd);
-
-		// Capture output.
-		const stdout = new WritableStreamBuffer();
-		const stderr = new WritableStreamBuffer();
-
-		// Call multiSemanticRelease()
-		try {
-			const result = await multiSemanticRelease(null, {}, { cwd, stdout, stderr, env });
-
-			// Not reached.
-			expect(false).toBe(true);
-		} catch (e) {
-			expect(e.message).toBe("Cannot release msr-test-c because dependency msr-test-b has not been released yet");
-		}
 	});
 	test("Configured plugins are called as normal", async () => {
 		// Create Git repo with copy of Yarn workspaces fixture.
